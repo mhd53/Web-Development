@@ -1,6 +1,6 @@
 // @mhd53
 // CS142 Project 2: JavaScript Calisthenics
-
+"use strict";
 function cs142MakeMultiFilter(originalArray) {
 	/* Takes an array as a parameter and rerturns a function that can be used
 	   to filter the elements of this array.
