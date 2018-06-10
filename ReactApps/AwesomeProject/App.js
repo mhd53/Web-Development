@@ -1,5 +1,8 @@
+/*
 import React from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View, Button, Alert, Platform, TouchableHighlight, TouchableOpacity,
+		TouchableNativeFeedback, TouchableWithoutFeedback, ScrollView, Image, ViewPagerAndroid, FlatList} from 'react-native';
+*/
 
 /*
 export default class App extends React.Component {
@@ -120,6 +123,7 @@ export default class LotsOfStyles extends React.Component {
 }
 */
 
+/*
 const styles = StyleSheet.create({
   container: {
     marginTop: 25,
@@ -138,6 +142,7 @@ const styles = StyleSheet.create({
     color: 'red',
   },
 });
+*/
 
 // Part V: Height and Width:
 /*
@@ -292,6 +297,7 @@ export default class AlignItemsBasics extends React.Component {
 
 // Part VII: Handling Text Input: 
 
+/*
 export default class PizzaTranslator extends React.Component {
   constructor(props) {
     super(props);
@@ -314,4 +320,350 @@ export default class PizzaTranslator extends React.Component {
       </View>
       );
   }
+}
+*/
+
+// Part VIII: Handling Touches 
+/*
+export default class ButtonBasics extends React.Component {
+	_onPressButton() {
+		Alert.alert("You tapped the button!")
+	}
+
+	render() {
+		return (
+			<View style={buttonStyles.container}>
+				<View style={buttonStyles.buttonContainer}>
+					<Button
+						onPress={this._onPressButton}
+						title="Press Me"
+					/>
+				</View>
+				<View style={buttonStyles.buttonContainer}>
+					<Button
+						onPress={this._onPressButton}
+						title="Press Me"
+						color="#841584"
+					/>
+				</View>
+				<View style={buttonStyles.alternativeLayoutButtonContainer}>
+					<Button 
+						onPress={this._onPressButton}
+						title="This looks great!"
+					/>
+					<Button
+						onPress={this._onPressButton}
+						title="OK!"
+						color="#841584"
+					/>
+				</View>
+			</View>
+			);
+	}
+}
+
+const buttonStyles = StyleSheet.create({
+	container: {
+		flex: 1,
+		justifyContent: 'center',
+	},
+
+	buttonContainer: {
+		margin: 20,
+	},
+
+	alternativeLayoutButtonContainer: {
+		margin: 20,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+	}
+})
+*/
+
+// Touchable Buttons
+
+/*
+export default class Touchables extends React.Component {
+	_onPressButton() {
+		Alert.alert("You tapped the button!")
+	}
+
+	_onLongPressButton() {
+		Alert.alert("You long-pressed the button!")
+	}
+
+	render() {
+		return (
+			<View  style = {touchableStyles.container}>
+				<TouchableHighlight onPress={this._onPressButton} underlayColor="white">
+					<View style={touchableStyles.button}>
+						<Text style={touchableStyles.buttonText}>TouchableHighlight</Text>
+					</View>
+				</TouchableHighlight>
+
+				<TouchableOpacity onPress={this._onPressButton}>
+					<View style={touchableStyles.button}>
+						<Text style={touchableStyles.buttonText}>TouchableOpacity</Text>
+					</View>
+				</TouchableOpacity>
+
+				<TouchableNativeFeedback
+					onPress={this._onPressButton}
+					background={Platform.OS === 'android' ? TouchableNativeFeedback.SelectableBackground() : ''}>
+					<View style={touchableStyles.button}>
+						<Text style={touchableStyles.buttonText}>TouchableNativeFeedback</Text>
+					</View>
+				</TouchableNativeFeedback>
+
+				<TouchableWithoutFeedback onPress={this._onPressButton}>
+					<View style={touchableStyles.button}>
+						<Text style={touchableStyles.buttonText}>TouchableWithoutFeedback</Text>
+					</View>
+				</TouchableWithoutFeedback>
+
+				<TouchableHighlight onPress={this._onPressButton} onLongPress={this._onLongPressButton}  onLongPress={this._onLongPressButton} 
+									underlayColor='white'>
+					<View style={touchableStyles.button}>
+						<Text style={touchableStyles.buttonText}>Touchable with Long Press</Text>
+					</View>
+
+				</TouchableHighlight>
+			</View> 
+			);
+	}
+}
+
+const touchableStyles = StyleSheet.create ({
+	container: {
+		paddingTop: 60,
+		alignItems: 'center',
+	},
+
+	button: {
+		marginBottom: 30,
+		width: 260,
+		alignItems: 'center',
+		backgroundColor: '#2196F3',
+	},
+
+	buttonText: {
+		padding: 20,
+		color: 'white'
+	}
+})
+*/
+
+/*
+Part: IX: ScrollView
+export default class IScrolledDownAndWhatHappenedNextSchockedMe extends React.Component {
+	render() {
+		return (
+			<ScrollView>
+				<Text style={{fontSize: 96}}>Scroll me plz</Text>
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Text style={{fontSize: 96}}>If you like</Text>
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Text style={{fontSize: 96}}>Scrolling down</Text>
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Text style={{fontSize: 96}}>What's the best</Text>
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Text style={{fontSize: 96}}>Framework around?</Text>
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Image source={require('./react-native/img/favicon.png')} />
+				<Text style={{fontSize: 96}}>React Native</Text>
+			</ScrollView>
+			);
+	}
+}
+*/
+
+// Extra: ViewPagerAndroid
+
+/*
+export default class ImplementAndroidTabView extends React.Component {
+	render() {
+		return (
+			<ViewPagerAndroid
+				style={styles.viewPager}
+				initialPage={0}>
+
+				<View style={styles.pageStyle} key="1">
+					<Text>First page</Text>
+				</View>
+
+				<View style={styles.pageStyle} key="2">
+					<Text>Second page</Text>
+				</View>
+			</ViewPagerAndroid>
+			);
+	}
+}
+
+const styles = StyleSheet.create({
+	viewPager: {
+		flex: 1,
+	},
+
+	pageStyle: {
+		alignItems: 'center',
+		padding: 20,
+	}
+});
+*/
+
+// Part X: Using List Views
+
+/*
+export default class FlatListBasics extends React.Component {
+	render() {
+		return (
+			<View style={styles.container}>
+				<FlatList
+					data={[
+						{key: 'Devin'},
+						{key: 'Jackson'},
+						{key: 'James'},
+						{key: 'Joel'},
+						{key: 'John'},
+						{key: 'Jillian'},
+						{key: 'Jimmy'},
+						{key: 'Julie'},
+						]}
+					renderItem={({item}) => <Text style={styles.item}>{item.key}</Text>}
+					/>
+			</View>
+			);
+	}
+}
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		paddingTop: 22,
+	},
+
+	item: {
+		padding: 10,
+		fontSize: 18,
+		height: 44,
+	},
+})
+*/
+
+// Data broken into logical sections: IOS UITableViews equiv
+/*
+import React from 'react';
+import {SectionList, StyleSheet, Text, View} from 'react-native';
+
+export default class SectionListBasics extends React.Component {
+	render() {
+		return (
+			<View style={styles.container}>
+				<SectionList
+				 sections={[
+				 	{title: 'D', data: ['Devin']},
+				 	{title: 'J', data: ['Jackson', 'James', 'Jillian', 'Jimmy', 'Joel', 'John',
+				 		'Julie']},
+				 	]}
+
+				 renderItem={({item}) => <Text style={styles.item}>{item}</Text>}
+				 renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
+				 keyExtractor={(item, index) => index}
+				 />
+			</View>
+			);
+	}
+}
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		paddingTop: 22
+	},
+
+	sectionHeader: {
+		paddingTop: 2,
+		paddingLeft: 10,
+		paddingRight: 10,
+		paddingBottom: 2,
+		fontSize: 14,
+		fontWeight: 'bold',
+		backgroundColor: 'rgba(247, 247, 247, 1.0)',
+	},
+
+	item: {
+		padding: 10,
+		fontSize: 18,
+		height: 44,
+	},
+})
+*/
+
+// Part XI: Networking
+
+import React from 'react';
+import {StyleSheet, FlatList, ActivityIndicator, Text, View} from 'react-native';
+
+export default class FetchExample extends React.Component {
+	constructor(props) {
+	  super(props);
+	
+	  this.state = {isLoading: true};
+	}
+
+	componentDidMount() {
+		return fetch('https://facebook.github.io/react-native/movies.json')
+			.then((response) => response.json())
+			.then((responseJson) => {
+				this.setState({
+					isLoading: false,
+					dataSource: responseJson.movies,
+				}, function() {
+
+				});
+
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+	}
+
+	render() {
+		if (this.state.isLoading) {
+			return(
+				<View style={{flex: 1, padding: 20,}}>
+					<ActivityIndicator/>
+				</View>
+				)
+		}
+
+		return(
+			<View style={{flex: 1, paddingTop: 20}}>
+				<FlatList
+					data={this.state.dataSource}
+					renderItem={({item}) => <Text>{item.title}, {item.releaseYear}</Text>}
+					keyExtractor={(item, index) => index.toString()} // fix warning: failed child context type
+				/>
+			</View>
+			);
+	}
 }
