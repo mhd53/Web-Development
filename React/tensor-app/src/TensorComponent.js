@@ -24,7 +24,7 @@ StyledButton.defaultProps = {
 
 // Main Components
 
-class CreateData extends React.Compoent {
+class CreateData extends React.Component {
 	constructor(props) {
 	  super(props);
 	
@@ -32,6 +32,7 @@ class CreateData extends React.Compoent {
 	}
 
 	createSynData() {
+		return;
 
 	}
 
