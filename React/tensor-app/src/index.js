@@ -6,5 +6,7 @@ import App from './App';
 import TestLinearModel from './TensorComponent';
 import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<TestLinearModel />, document.getElementById('root'));
+ReactDOM.render(
+	<App />, 
+	document.getElementById('root'));
 registerServiceWorker();

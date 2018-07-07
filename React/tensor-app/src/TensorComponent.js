@@ -5,7 +5,21 @@ import defaultTheme from './theme';
 import {Col, Row, Container} from 'reactstrap';
 
 // Styled Components
+const StyledMainHeader = styled.div`
+	background: ${({theme}) => theme.headerBgColor};
+	width: 100%;
+	height: 30px;
+	`;
+
+const StyledMainHeaderTitle = styled.h1`
+	margin: 0;
+	font-size: ${({theme}) => theme.headerFontSize};
+	`;
+
 const StyledContainer = styled.div`
+	background: ${({theme}) => theme.background};
+	font-family: ${({theme}) => theme.fontFamily};
+	overflow: hidden;
 	width: ${props => props.width};
 	`; 
 
@@ -24,6 +38,7 @@ StyledButton.defaultProps = {
 
 // Main Components
 
+// ML Components
 class CreateData extends React.Component {
 	constructor(props) {
 	  super(props);
@@ -42,7 +57,11 @@ class SimpleNN extends React.Component {
 	constructor(props) {
 	  super(props);
 	
-	  this.state = {};
+	  this.state = {model: null};
+
+	  // Bind methods
+	  this.fit = this.fit.bind(this);
+	  this.predict = this.predict.bind(this);
 	}
 
 	createModel() {
@@ -52,10 +71,57 @@ class SimpleNN extends React.Component {
 		model.complile({optimizer: 'sgd', loss: 'binaryCrossentropy', lr:0.1});
 		return model;
 	}
+
+	loadData() {
+		return [xs, ys];
+	}
+
+
+	async fit() {
+		const model = this.createModel();
+		const dataset = this.loadData();
+		const X = dataset[0];
+		const Y = dataset[1];
+
+		await model.fit(X, Y, {
+			batchSize: 1,
+			epochs: 5000
+		});
+
+		this.setState({model: model}); // update model
+
+	}
+
+	predict() {
+		const model = this.state.model;
+		model.predict(xs).print();
+	}
+
+	render() {
+		return (
+			<Row>
+				<Col>
+					<StyledButton onClick={this.fit}>
+						Fit model!
+					</StyledButton>
+				</Col>
+				<Col>
+					<StyledButton onClick={this.predict}>
+						Predict! 
+					</StyledButton>
+				</Col>
+			</Row>
+			);
+	}
 }
 
 const xs = tf.tensor2d([[0, 0], [0, 1], [1, 0], [1, 1]]);
 const ys = tf.tensor2d([[0], [1], [1], [0]]);
+
+class TensorModel extends React.Component {
+
+
+}
 
 class OptimizationModel extends React.Component {
 	constructor(props) {
@@ -232,4 +298,4 @@ class TestLinearModel extends React.Component {
 	}
 }
 
-export default TestLinearModel; 
+export default SimpleNN; 
