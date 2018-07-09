@@ -5,6 +5,7 @@ import defaultTheme from './theme';
 import {Col, Row, Container} from 'reactstrap';
 
 // Styled Components
+/*
 const StyledMainHeader = styled.div`
 	background: ${({theme}) => theme.headerBgColor};
 	width: 100%;
@@ -14,7 +15,9 @@ const StyledMainHeader = styled.div`
 const StyledMainHeaderTitle = styled.h1`
 	margin: 0;
 	font-size: ${({theme}) => theme.headerFontSize};
+	color: ${({theme}) => theme.headerFontColor};
 	`;
+*/
 
 const StyledContainer = styled.div`
 	background: ${({theme}) => theme.background};
@@ -30,6 +33,24 @@ const StyledButton = styled.button`
 	margin: 1em;
 	padding: 0.25em 1em;
 	border: 2px solid ${({theme}) => theme.buttonBgColor};
+	opacity: ${props => props.disabled ? .5 : 1};
+	border-radius: 4px;
+	`;
+
+const StyledForm = styled.form`
+	width: 50%;
+	border: 2px solid black;
+	`;
+const StyledInput = styled.input`
+	width: 50%;
+	border: 3px solid ${({theme}) => theme.buttonBgColor};
+	color ${props => props.invalid ? '#E53935' : ''};
+	font-size: 16px; 
+	opacity: ${props => props.disabled ? .5 : 1}; 
+
+	`;
+
+const StyledOutput = styled.output`
 	`;
 
 StyledButton.defaultProps = {
@@ -38,7 +59,59 @@ StyledButton.defaultProps = {
 
 // Main Components
 
+class PredictionInput extends React.Component {
+	render() {
+		return (
+			<Row>
+				<Col>
+					<StyledInput type="text" />
+				</Col>
+			</Row>
+			);
+	}
+}
+
+class PredictionOutput extends React.Component {
+	render() {
+		return (
+			<Row>
+				<Col>
+					<StyledOutput />
+				</Col>
+			</Row>
+			);
+	}
+}
+
+class ResultForm extends React.Component {
+	render() {
+		return (
+			<Row>
+				<Col xs="12">
+					<StyledForm>
+						<PredictionInput />
+						<PredictionOutput />
+					</StyledForm>
+				</Col>
+			</Row>
+			);
+	}
+}
+
+class ModelContainer extends React.Compoent {
+	render() {
+		return (
+			<StyledContainer width="70%">
+			{/* Use conditional render + model state to render different models */}
+			</StyledContainer>
+			);
+	}
+}
+
 // ML Components
+
+
+/*
 class CreateData extends React.Component {
 	constructor(props) {
 	  super(props);
@@ -51,24 +124,70 @@ class CreateData extends React.Component {
 
 	}
 
+	render() {
+		return (
+			null,
+			);
+	}
+
+}
+*/
+
+class LoadDataset extends React.Component {
+	constructor(props) {
+	  super(props);
+	
+	  this.state = {dataset: []};
+	}
+
+	loadData() {
+		this.setState({dataset: [xs, ys]});
+	}
+
+	render() {
+		return (
+			null
+			);
+	}
+
 }
 
 class SimpleNN extends React.Component {
 	constructor(props) {
 	  super(props);
 	
-	  this.state = {model: null};
+	  this.state = {model: null, isFitted: false, dataset:[], predictionData: []};
 
 	  // Bind methods
 	  this.fit = this.fit.bind(this);
 	  this.predict = this.predict.bind(this);
+	  this.handleClick = this.handleClick.bind(this);
+	}
+
+	handleClick(event) {
+		alert('You Clicked Me!' + this.props.fitButton);
+		// console.log(this.props.id);
+		// if (this.props.className === 'fit-button') {
+		// if (this.props.fitButton) {
+		// if (event.target.id == 'fit-button') {
+		// this.setState(prevState => ({
+		// 	isFitted: !prevState.isFitted,
+		// }));
+		if (event.target.value == "fit-button" && !this.state.isFitted) {
+			this.setState(prevState => ({
+				isFitted: !prevState.isFitted,
+			}));
+			// console.log('Hey I changed my state for you!');
+			alert('You have succesfully changed states!');
+		}
+
 	}
 
 	createModel() {
 		var model = tf.sequential();
 		model.add(tf.layers.dense({units: 8, inputShape: 2, activation: 'tanh'}));
 		model.add(tf.layers.dense({units: 1, activation: 'sigmoid'}));
-		model.complile({optimizer: 'sgd', loss: 'binaryCrossentropy', lr:0.1});
+		model.compile({optimizer: 'sgd', loss: 'binaryCrossentropy', lr:0.1});
 		return model;
 	}
 
@@ -78,7 +197,7 @@ class SimpleNN extends React.Component {
 
 
 	async fit() {
-		const model = this.createModel();
+		var model = this.createModel();
 		const dataset = this.loadData();
 		const X = dataset[0];
 		const Y = dataset[1];
@@ -88,25 +207,27 @@ class SimpleNN extends React.Component {
 			epochs: 5000
 		});
 
-		this.setState({model: model}); // update model
+		console.log('Training finished!');
 
+		this.setState({model: model, isFitted: !this.state.isFitted}); // update model
 	}
 
-	predict() {
-		const model = this.state.model;
-		model.predict(xs).print();
+	async predict() {
+		var model = this.state.model;
+		const prediction = await model.predict(xs);
+		this.setState({predictionData: prediction});
 	}
 
 	render() {
 		return (
 			<Row>
 				<Col>
-					<StyledButton onClick={this.fit}>
+					<StyledButton className='fit-button' primary value="fit-button" onClick={this.handleClick}>
 						Fit model!
 					</StyledButton>
 				</Col>
 				<Col>
-					<StyledButton onClick={this.predict}>
+					<StyledButton className='predict-button' primary onClick={this.handleClick} disabled={!this.state.isFitted}>
 						Predict! 
 					</StyledButton>
 				</Col>
@@ -117,11 +238,6 @@ class SimpleNN extends React.Component {
 
 const xs = tf.tensor2d([[0, 0], [0, 1], [1, 0], [1, 1]]);
 const ys = tf.tensor2d([[0], [1], [1], [0]]);
-
-class TensorModel extends React.Component {
-
-
-}
 
 class OptimizationModel extends React.Component {
 	constructor(props) {

@@ -17,25 +17,25 @@ const StyledContainer = styled.div`
 const StyledMainHeader = styled.div`
   background: ${({theme}) => theme.headerBgColor};
   width: 100%;
-  height: 30px;
+  height: 50px;
+  display: flex;
+  align-items: center;
   `;
 
 const StyledMainHeaderTitle = styled.h1`
   margin: 0;
   font-size: ${({theme}) => theme.headerFontSize};
+  color: ${({theme}) => theme.headerFontColor};
   `;
 
 // Set default props for styled-components
-StyledMainHeaderTitle.defaultProps = {
+StyledMainHeader.defaultProps = {
   theme: defaultTheme,
 }
 
 StyledMainHeaderTitle.defaultProps = {
   theme: defaultTheme,
 }
-
-
-
 
 // UI Components
 class AppHeader extends React.Component {
