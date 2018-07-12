@@ -101,13 +101,16 @@ class PredictionInput extends React.Component {
 	constructor(props) {
 	  super(props);
 	
-	  this.state = {value: '', invalidInput: false};
+	  this.state = {value: '', isValid: false};
+
+	  // Reference
+	  this.invalid = React.createRef();
 
 	  // Bind methods
 	  this.setValue = this.setValue.bind(this);
 	  this.getValue = this.getValue.bind(this);
-	  this.setInvalidInput = this.setInvalidInput.bind(this);
-	  this.getInvalidInput = this.getInvalidInput.bind(this);
+	  this.setIsValid = this.setIsValid.bind(this);
+	  this.getIsValid = this.getIsValid.bind(this);
 
 	  this.handleChange = this.handleChange.bind(this);
 	  this.handleClick = this.handleClick.bind(this);
@@ -118,15 +121,15 @@ class PredictionInput extends React.Component {
 		this.setState({value: newValue});
 	}
 
-	setInvalidInput(newBool) {
-		this.setState({invalidInput: newBool});
+	setIsValid(newBool) {
+		this.setState({isValid: newBool});
 	}
 
 	getValue() {
 		return this.state.value;
 	}
 
-	getInvalidInput() {
+	getIsValid() {
 		return this.state.invalidInput;
 	}
 
@@ -146,7 +149,7 @@ class PredictionInput extends React.Component {
 	 * @return {[type]}   [description]
 	 */
 	handleChange(e) {
-		console.log(e.target.invalid);
+		alert(this.invalid.current.value);
 		this.setValue(e.target.value);
 	}
 
@@ -156,7 +159,7 @@ class PredictionInput extends React.Component {
 	 * @return no return value.
 	 */
 	handleClick() {
-		if (!this.getInvalidInput()) {
+		if (this.getIsValid()) {
 			this.props.setInput(this.props.getInput());
 		}
 	}
@@ -174,6 +177,7 @@ class PredictionInput extends React.Component {
 						Data point:
 						<StyledInput 
 								required
+								ref={this.invalid}
 								pattern="\[\d+,\s\d+\]"
 								type="text" 
 								onChange={this.handleChange} 
