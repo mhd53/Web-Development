@@ -19,11 +19,21 @@ const StyledMainHeaderTitle = styled.h1`
 	`;
 */
 
+const StyledModelTitle = styled.h1`
+	margin: 0;
+	font-size: ${({theme}) => theme.header1FontSize};
+	color: ${({theme}) => theme.headerFontColor};
+	`;
+
 const StyledContainer = styled.div`
 	background: ${({theme}) => theme.background};
 	font-family: ${({theme}) => theme.fontFamily};
 	overflow: hidden;
 	width: ${props => props.width};
+	margin-top: ${props => props.marginTop};
+	margin-bottom: ${props => props.marginBot};
+	margin-left: ${props => props.marginLeft};
+	margin-right: ${props => props.marginTop};
 	`; 
 
 const StyledButton = styled.button`
@@ -32,51 +42,172 @@ const StyledButton = styled.button`
 	font-size: 1em;
 	margin: 1em;
 	padding: 0.25em 1em;
-	border: 2px solid ${({theme}) => theme.buttonBgColor};
+	border: 2px solid ${({theme}) => theme.borderColor};
 	opacity: ${props => props.disabled ? .5 : 1};
 	border-radius: 4px;
 	`;
 
 const StyledForm = styled.form`
-	width: 50%;
-	border: 2px solid black;
+	width: 100%;
+	height: ${props => props.height};
+	border: 4px solid black;
+	border-radius: 4px;
+	`;
+
+const StyledFormLabel = styled.label`
+	font-size: 1em;
+	margin: 1em;
+	padding 0.25em 1em;
 	`;
 const StyledInput = styled.input`
-	width: 50%;
-	border: 3px solid ${({theme}) => theme.buttonBgColor};
+	width: 80%;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	padding: 5px;
+	border: 2px solid ${({theme}) => theme.borderColor};
 	color ${props => props.invalid ? '#E53935' : ''};
 	font-size: 16px; 
 	opacity: ${props => props.disabled ? .5 : 1}; 
+	border-radius: 4px;
 
 	`;
 
 const StyledOutput = styled.output`
+	width: 80%;
+	height: 30px;
+	margin-top: 20px;
+	margin-buttom: 20px;
+	padding: 5px;
+
+	border: 2px solid ${({theme}) => theme.borderColor};
+	border-radius: 4px;
 	`;
 
 StyledButton.defaultProps = {
 	theme: defaultTheme, 
 }
 
+StyledInput.defaultProps = {
+	theme: defaultTheme,
+}
+
+StyledOutput.defaultProps = {
+	theme: defaultTheme,
+}
+
 // Main Components
 
 class PredictionInput extends React.Component {
+	constructor(props) {
+	  super(props);
+	
+	  this.state = {value: '', invalidInput: false};
+
+	  // Bind methods
+	  this.setValue = this.setValue.bind(this);
+	  this.getValue = this.getValue.bind(this);
+	  this.setInvalidInput = this.setInvalidInput.bind(this);
+	  this.getInvalidInput = this.getInvalidInput.bind(this);
+
+	  this.handleChange = this.handleChange.bind(this);
+	  this.handleClick = this.handleClick.bind(this);
+	}
+
+	// Getter and setter methods
+	setValue(newValue) {
+		this.setState({value: newValue});
+	}
+
+	setInvalidInput(newBool) {
+		this.setState({invalidInput: newBool});
+	}
+
+	getValue() {
+		return this.state.value;
+	}
+
+	getInvalidInput() {
+		return this.state.invalidInput;
+	}
+
+	/**
+	 * Check to see whether the user input is valid or not.
+	 * Uses /\[\d+,\s\d+\]/ regx to validate the input.
+	 * @param  {string} userInput [value that the user has entered]
+	 * @return {[bool]} isValid [true if userInput is valid]
+	 */
+	validate(userInput) {
+
+	}
+
+	/**
+	 * Will update the state.value with what the user types in.
+	 * @param  {react syntetic event]} e [description]
+	 * @return {[type]}   [description]
+	 */
+	handleChange(e) {
+		console.log(e.target.invalid);
+		this.setValue(e.target.value);
+	}
+
+	/**
+	 * Handle click method for the OK button.
+	 * Will set state of the input to what the user has typed in.
+	 * @return no return value.
+	 */
+	handleClick() {
+		if (!this.getInvalidInput()) {
+			this.props.setInput(this.props.getInput());
+		}
+	}
+
+	checkValidInput() {
+		const userInput = this.props.getValue();
+	}
+
 	render() {
+		const value = this.state.value;
 		return (
 			<Row>
-				<Col>
-					<StyledInput type="text" />
+				<Col xs="12">
+					<StyledFormLabel>
+						Data point:
+						<StyledInput 
+								required
+								pattern="\[\d+,\s\d+\]"
+								type="text" 
+								onChange={this.handleChange} 
+								disabled={this.props.isFitted} 
+								placeholder="Enter data point i.e [0, 0]" 
+								value={value} />
+						<StyledButton 
+								primary
+								>
+							OK
+						</StyledButton>
+					</StyledFormLabel>
 				</Col>
 			</Row>
 			);
 	}
 }
 
+
+/**
+ * Presentational components:
+ */
 class PredictionOutput extends React.Component {
 	render() {
+		const output = this.props.output;
 		return (
 			<Row>
-				<Col>
-					<StyledOutput />
+				<Col xs="12">
+					<StyledFormLabel>
+						Result Prediction:
+						<StyledOutput name="result"> 
+							{output}
+						</StyledOutput> 
+					</StyledFormLabel>
 				</Col>
 			</Row>
 			);
@@ -85,24 +216,92 @@ class PredictionOutput extends React.Component {
 
 class ResultForm extends React.Component {
 	render() {
+		const isFitted = this.props.getIsFitted();
 		return (
 			<Row>
 				<Col xs="12">
-					<StyledForm>
-						<PredictionInput />
-						<PredictionOutput />
-					</StyledForm>
+					<StyledContainer className="result-form" marginTop="20px">
+						<StyledForm >
+							<PredictionInput 
+									className="prediction-input" 
+									isFitted={isFitted} 
+									/>
+							<PredictionOutput 
+									className="prediction-output" 
+									output={this.props.output} 
+									/>
+						</StyledForm>
+					</StyledContainer>
 				</Col>
 			</Row>
 			);
 	}
 }
 
-class ModelContainer extends React.Compoent {
+class ModelContainer extends React.Component {
+	constructor(props) {
+	  super(props);
+	
+	  this.state = {input: '', isFitted: false};
+
+	  // Bind methods
+	  this.setInput = this.setInput.bind(this);
+	  this.setIsFitted = this.setIsFitted.bind(this);
+	  this.getInput = this.setInput.bind(this);
+	  this.getIsFitted = this.getIsFitted.bind(this);
+	}
+	// Setter and getter methods (some standards should remain the same)
+	setInput(newInput) {
+		this.setState({input: newInput});
+	}
+
+	setIsFitted(newBool) {
+		this.setState({isFitted: newBool});
+	}
+
+	getInput() {
+		return this.state.input;
+	}
+
+	getIsFitted(newBool) {
+		return this.state.isFitted;
+	}
+
 	render() {
+		const modelName = this.props.modelName;
+		let model;
+		if (modelName == 'snn') {
+			/* Create a Simple Neural Net model. */
+			model = <SimpleNN dataset={this.props.dataset} 
+							  setInput={this.setInput} 
+							  setIsFitted={this.setIsFitted}
+							  getInput={this.getInput}
+							  getIsFitted={this.getIsFitted}
+							  title="Simple Neural Net Powers!" 
+							  />
+		}
+
+
 		return (
-			<StyledContainer width="70%">
+			<StyledContainer width="100%">
 			{/* Use conditional render + model state to render different models */}
+			<Container>
+				<Row className="model">
+					<Col xs="12">
+						{model}
+					</Col>
+				</Row>
+
+				<Row className="modelForm">
+					<Col xs="12">
+						<ResultForm setInput={this.setInput}
+									setIsFitted={this.setIsFitted}
+									getInput={this.getInput}
+									getIsFitted={this.getIsFitted}
+									/>
+					</Col>
+				</Row>
+			</Container>
 			</StyledContainer>
 			);
 	}
@@ -133,11 +332,14 @@ class CreateData extends React.Component {
 }
 */
 
-class LoadDataset extends React.Component {
+class DatasetManager extends React.Component {
 	constructor(props) {
 	  super(props);
 	
 	  this.state = {dataset: []};
+	}
+
+	readData() {
 	}
 
 	loadData() {
@@ -149,14 +351,14 @@ class LoadDataset extends React.Component {
 			null
 			);
 	}
-
 }
 
 class SimpleNN extends React.Component {
 	constructor(props) {
 	  super(props);
 	
-	  this.state = {model: null, isFitted: false, dataset:[], predictionData: []};
+	  // this.state = {model: null, isFitted: false, dataset:[], predData: []};
+	  this.state = {model: null};
 
 	  // Bind methods
 	  this.fit = this.fit.bind(this);
@@ -192,13 +394,16 @@ class SimpleNN extends React.Component {
 	}
 
 	loadData() {
+		const dataset = this.props.dataset;
+		const xs = dataset[0];
+		const ys = dataset[1];
 		return [xs, ys];
 	}
 
 
 	async fit() {
 		var model = this.createModel();
-		const dataset = this.loadData();
+		const dataset = this.props.dataset;
 		const X = dataset[0];
 		const Y = dataset[1];
 
@@ -209,29 +414,51 @@ class SimpleNN extends React.Component {
 
 		console.log('Training finished!');
 
-		this.setState({model: model, isFitted: !this.state.isFitted}); // update model
+		// this.setState({model: model, isFitted: !this.state.isFitted}); // update model
+
+		// Update snn state
+		this.setState({model: model});
+
+		// Update model container state
+		this.props.setIsFitted(true);
 	}
 
 	async predict() {
-		var model = this.state.model;
-		const prediction = await model.predict(xs);
-		this.setState({predictionData: prediction});
+		if (this.props.isFitted && this.props.predData.size != 0) {
+			var model = this.state.model;
+			const prediction = await model.predict(this.props.predData);
+			this.setState({predictionData: prediction});
+		}
+		console.log("prediction data size: " + this.props.predData.size + 
+			", isFitted: " + this.props.isFitted);
+		return;
 	}
 
 	render() {
 		return (
-			<Row>
-				<Col>
-					<StyledButton className='fit-button' primary value="fit-button" onClick={this.handleClick}>
-						Fit model!
-					</StyledButton>
-				</Col>
-				<Col>
-					<StyledButton className='predict-button' primary onClick={this.handleClick} disabled={!this.state.isFitted}>
-						Predict! 
-					</StyledButton>
-				</Col>
-			</Row>
+			<StyledContainer className="snn-model" marginTop="20px">
+				<Row className="snn-title">
+					<Col>
+						<StyledModelTitle>
+							{this.props.title}
+						</StyledModelTitle>
+					</Col>
+				</Row>
+
+				<Row className="snn-buttons">
+					<Col>
+						<StyledButton className='fit-button' primary value="fit-button" onClick={this.handleClick}>
+							Fit model!
+						</StyledButton>
+					</Col>
+
+					<Col>
+						<StyledButton className='predict-button' primary onClick={this.handleClick} disabled={!this.state.isFitted}>
+							Predict! 
+						</StyledButton>
+					</Col>
+				</Row>
+			</StyledContainer>
 			);
 	}
 }
@@ -382,7 +609,7 @@ class TestLinearModel extends React.Component {
 
 	render() {
 		return (
-			<StyledContainer>
+			<StyledContainer width="80%">
 				<Container>
 					<Row>
 						<Col xs="4">
@@ -414,4 +641,4 @@ class TestLinearModel extends React.Component {
 	}
 }
 
-export default SimpleNN; 
+export default ModelContainer; 
