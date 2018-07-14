@@ -4,7 +4,7 @@ import {Col, Row, Container} from 'reactstrap';
 import logo from './logo.svg';
 import './App.css';
 import defaultTheme from './theme';
-import ModelContainer from './TensorComponent';
+import ModelContainer from './ModelContainer';
 
 // Styled Components
 const StyledAppContainer = styled.div`
@@ -56,7 +56,7 @@ class AppContainer extends React.Component {
     return (
       <StyledAppContainer width="100%">
         <AppHeader header="Tensorflow is awesome!" />
-        <ModelContainer modelName='snn' />
+        <ModelContainer modelName='snn' regx='\[\d+,\s\d+\]' />
       </StyledAppContainer>
       );
   }

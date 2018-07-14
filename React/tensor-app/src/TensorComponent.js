@@ -2,9 +2,17 @@ import React from 'react';
 import styled from 'styled-components';
 import * as tf from '@tensorflow/tfjs';
 import defaultTheme from './theme';
-import {Col, Row, Container} from 'reactstrap';
+import {Col, Row, Container, Popover, PopoverHeader, PopoverBody} from 'reactstrap'; 
 
-// Styled Components
+// Styled Components import 
+import StyledModelTitle from './StyledComponents/StyledModelTitle';
+import StyledContainer from './StyledComponents/StyledContainer';
+import StyledButton from './StyledComponents/StyledButton';
+import StyledForm from './StyledComponents/StyledForm';
+import StyledFormLabel from './StyledComponents/StyledFormLabel';
+import StyledInput from './StyledComponents/StyledInput';
+import StyledOutput from './StyledComponents/StyledOutput';
+
 /*
 const StyledMainHeader = styled.div`
 	background: ${({theme}) => theme.headerBgColor};
@@ -19,89 +27,16 @@ const StyledMainHeaderTitle = styled.h1`
 	`;
 */
 
-const StyledModelTitle = styled.h1`
-	margin: 0;
-	font-size: ${({theme}) => theme.header1FontSize};
-	color: ${({theme}) => theme.headerFontColor};
-	`;
 
-const StyledContainer = styled.div`
-	background: ${({theme}) => theme.background};
-	font-family: ${({theme}) => theme.fontFamily};
-	overflow: hidden;
-	width: ${props => props.width};
-	margin-top: ${props => props.marginTop};
-	margin-bottom: ${props => props.marginBot};
-	margin-left: ${props => props.marginLeft};
-	margin-right: ${props => props.marginTop};
-	`; 
-
-const StyledButton = styled.button`
-	background: ${props => props.primary ? props.theme.buttonBgColor : 'white'};
-	color: ${props => props.primary ? props.theme.buttonFontColor : props.theme.buttonBgColor};
-	font-size: 1em;
-	margin: 1em;
-	padding: 0.25em 1em;
-	border: 2px solid ${({theme}) => theme.borderColor};
-	opacity: ${props => props.disabled ? .5 : 1};
-	border-radius: 4px;
-	`;
-
-const StyledForm = styled.form`
-	width: 100%;
-	height: ${props => props.height};
-	border: 4px solid black;
-	border-radius: 4px;
-	`;
-
-const StyledFormLabel = styled.label`
-	font-size: 1em;
-	margin: 1em;
-	padding 0.25em 1em;
-	`;
-const StyledInput = styled.input`
-	width: 80%;
-	margin-top: 20px;
-	margin-bottom: 20px;
-	padding: 5px;
-	border: 2px solid ${({theme}) => theme.borderColor};
-	color ${props => props.invalid ? '#E53935' : ''};
-	font-size: 16px; 
-	opacity: ${props => props.disabled ? .5 : 1}; 
-	border-radius: 4px;
-
-	`;
-
-const StyledOutput = styled.output`
-	width: 80%;
-	height: 30px;
-	margin-top: 20px;
-	margin-buttom: 20px;
-	padding: 5px;
-
-	border: 2px solid ${({theme}) => theme.borderColor};
-	border-radius: 4px;
-	`;
-
-StyledButton.defaultProps = {
-	theme: defaultTheme, 
-}
-
-StyledInput.defaultProps = {
-	theme: defaultTheme,
-}
-
-StyledOutput.defaultProps = {
-	theme: defaultTheme,
-}
 
 // Main Components
 
 class PredictionInput extends React.Component {
+	/*
 	constructor(props) {
 	  super(props);
 	
-	  this.state = {value: '', isValid: false};
+	  this.state = {value: '', isValid: false, isPopOpen: false};
 
 	  // Reference
 	  this.invalid = React.createRef();
@@ -111,9 +46,13 @@ class PredictionInput extends React.Component {
 	  this.getValue = this.getValue.bind(this);
 	  this.setIsValid = this.setIsValid.bind(this);
 	  this.getIsValid = this.getIsValid.bind(this);
+	  this.setIsPopOpen = this.setIsPopOpen.bind(this);
+	  this.getIsPopOpen = this.getIsPopOpen.bind(this);
 
+	  // Class Methods
 	  this.handleChange = this.handleChange.bind(this);
-	  this.handleClick = this.handleClick.bind(this);
+	  this.handleSubmit = this.handleSubmit.bind(this);
+	  this.validate = this.validate.bind(this);
 	}
 
 	// Getter and setter methods
@@ -125,6 +64,10 @@ class PredictionInput extends React.Component {
 		this.setState({isValid: newBool});
 	}
 
+	setIsPopOpen(newBool) {
+		this.setState({popOpen: newBool});
+	}
+
 	getValue() {
 		return this.state.value;
 	}
@@ -133,59 +76,81 @@ class PredictionInput extends React.Component {
 		return this.state.invalidInput;
 	}
 
+	getIsPopOpen() {
+		return this.state.popOpen;
+	}
+	*/
+
 	/**
 	 * Check to see whether the user input is valid or not.
 	 * Uses /\[\d+,\s\d+\]/ regx to validate the input.
 	 * @param  {string} userInput [value that the user has entered]
 	 * @return {[bool]} isValid [true if userInput is valid]
 	 */
+	/*
 	validate(userInput) {
-
+		var regx = new RegExp("/\[\d+,\s\d\]/");  
+		return regx.test(userInput);
 	}
+	*/
 
 	/**
 	 * Will update the state.value with what the user types in.
 	 * @param  {react syntetic event]} e [description]
 	 * @return {[type]}   [description]
 	 */
+	/*
 	handleChange(e) {
-		alert(this.invalid.current.value);
+		// alert(this.invalid.current.value);
 		this.setValue(e.target.value);
+
+		// Check to see if input is valid
+		const isValid = this.validate(this.getValue());
+		this.setIsValid(isValid);
+
 	}
+	*/
 
 	/**
 	 * Handle click method for the OK button.
 	 * Will set state of the input to what the user has typed in.
 	 * @return no return value.
 	 */
-	handleClick() {
+	/*
+	handleSubmit(e) {
+		e.preventDefault();
 		if (this.getIsValid()) {
 			this.props.setInput(this.props.getInput());
 		}
-	}
 
-	checkValidInput() {
-		const userInput = this.props.getValue();
+		else {
+			const isPopOpen = true;
+			this.setIsPopOpen(isPopOpen);
+		}
+
 	}
+	*/
 
 	render() {
-		const value = this.state.value;
+		const value = this.props.value;
 		return (
 			<Row>
 				<Col xs="12">
 					<StyledFormLabel>
 						Data point:
 						<StyledInput 
+								invalid={!this.props.isValid}
 								required
-								ref={this.invalid}
-								pattern="\[\d+,\s\d+\]"
+								// ref={this.invalid}
+								// pattern="\[\d+,\s\d+\]"
 								type="text" 
-								onChange={this.handleChange} 
+								onChange={this.props.handleChange} 
 								disabled={this.props.isFitted} 
 								placeholder="Enter data point i.e [0, 0]" 
 								value={value} />
 						<StyledButton 
 								primary
+								type="submit"
 								>
 							OK
 						</StyledButton>
@@ -197,119 +162,9 @@ class PredictionInput extends React.Component {
 }
 
 
-/**
- * Presentational components:
- */
-class PredictionOutput extends React.Component {
-	render() {
-		const output = this.props.output;
-		return (
-			<Row>
-				<Col xs="12">
-					<StyledFormLabel>
-						Result Prediction:
-						<StyledOutput name="result"> 
-							{output}
-						</StyledOutput> 
-					</StyledFormLabel>
-				</Col>
-			</Row>
-			);
-	}
-}
-
-class ResultForm extends React.Component {
-	render() {
-		const isFitted = this.props.getIsFitted();
-		return (
-			<Row>
-				<Col xs="12">
-					<StyledContainer className="result-form" marginTop="20px">
-						<StyledForm >
-							<PredictionInput 
-									className="prediction-input" 
-									isFitted={isFitted} 
-									/>
-							<PredictionOutput 
-									className="prediction-output" 
-									output={this.props.output} 
-									/>
-						</StyledForm>
-					</StyledContainer>
-				</Col>
-			</Row>
-			);
-	}
-}
-
-class ModelContainer extends React.Component {
-	constructor(props) {
-	  super(props);
-	
-	  this.state = {input: '', isFitted: false};
-
-	  // Bind methods
-	  this.setInput = this.setInput.bind(this);
-	  this.setIsFitted = this.setIsFitted.bind(this);
-	  this.getInput = this.setInput.bind(this);
-	  this.getIsFitted = this.getIsFitted.bind(this);
-	}
-	// Setter and getter methods (some standards should remain the same)
-	setInput(newInput) {
-		this.setState({input: newInput});
-	}
-
-	setIsFitted(newBool) {
-		this.setState({isFitted: newBool});
-	}
-
-	getInput() {
-		return this.state.input;
-	}
-
-	getIsFitted(newBool) {
-		return this.state.isFitted;
-	}
-
-	render() {
-		const modelName = this.props.modelName;
-		let model;
-		if (modelName == 'snn') {
-			/* Create a Simple Neural Net model. */
-			model = <SimpleNN dataset={this.props.dataset} 
-							  setInput={this.setInput} 
-							  setIsFitted={this.setIsFitted}
-							  getInput={this.getInput}
-							  getIsFitted={this.getIsFitted}
-							  title="Simple Neural Net Powers!" 
-							  />
-		}
 
 
-		return (
-			<StyledContainer width="100%">
-			{/* Use conditional render + model state to render different models */}
-			<Container>
-				<Row className="model">
-					<Col xs="12">
-						{model}
-					</Col>
-				</Row>
 
-				<Row className="modelForm">
-					<Col xs="12">
-						<ResultForm setInput={this.setInput}
-									setIsFitted={this.setIsFitted}
-									getInput={this.getInput}
-									getIsFitted={this.getIsFitted}
-									/>
-					</Col>
-				</Row>
-			</Container>
-			</StyledContainer>
-			);
-	}
-}
 
 // ML Components
 
@@ -347,7 +202,7 @@ class DatasetManager extends React.Component {
 	}
 
 	loadData() {
-		this.setState({dataset: [xs, ys]});
+		// this.setState({dataset: [xs, ys]});
 	}
 
 	render() {
@@ -357,118 +212,7 @@ class DatasetManager extends React.Component {
 	}
 }
 
-class SimpleNN extends React.Component {
-	constructor(props) {
-	  super(props);
-	
-	  // this.state = {model: null, isFitted: false, dataset:[], predData: []};
-	  this.state = {model: null};
 
-	  // Bind methods
-	  this.fit = this.fit.bind(this);
-	  this.predict = this.predict.bind(this);
-	  this.handleClick = this.handleClick.bind(this);
-	}
-
-	handleClick(event) {
-		alert('You Clicked Me!' + this.props.fitButton);
-		// console.log(this.props.id);
-		// if (this.props.className === 'fit-button') {
-		// if (this.props.fitButton) {
-		// if (event.target.id == 'fit-button') {
-		// this.setState(prevState => ({
-		// 	isFitted: !prevState.isFitted,
-		// }));
-		if (event.target.value == "fit-button" && !this.state.isFitted) {
-			this.setState(prevState => ({
-				isFitted: !prevState.isFitted,
-			}));
-			// console.log('Hey I changed my state for you!');
-			alert('You have succesfully changed states!');
-		}
-
-	}
-
-	createModel() {
-		var model = tf.sequential();
-		model.add(tf.layers.dense({units: 8, inputShape: 2, activation: 'tanh'}));
-		model.add(tf.layers.dense({units: 1, activation: 'sigmoid'}));
-		model.compile({optimizer: 'sgd', loss: 'binaryCrossentropy', lr:0.1});
-		return model;
-	}
-
-	loadData() {
-		const dataset = this.props.dataset;
-		const xs = dataset[0];
-		const ys = dataset[1];
-		return [xs, ys];
-	}
-
-
-	async fit() {
-		var model = this.createModel();
-		const dataset = this.props.dataset;
-		const X = dataset[0];
-		const Y = dataset[1];
-
-		await model.fit(X, Y, {
-			batchSize: 1,
-			epochs: 5000
-		});
-
-		console.log('Training finished!');
-
-		// this.setState({model: model, isFitted: !this.state.isFitted}); // update model
-
-		// Update snn state
-		this.setState({model: model});
-
-		// Update model container state
-		this.props.setIsFitted(true);
-	}
-
-	async predict() {
-		if (this.props.isFitted && this.props.predData.size != 0) {
-			var model = this.state.model;
-			const prediction = await model.predict(this.props.predData);
-			this.setState({predictionData: prediction});
-		}
-		console.log("prediction data size: " + this.props.predData.size + 
-			", isFitted: " + this.props.isFitted);
-		return;
-	}
-
-	render() {
-		return (
-			<StyledContainer className="snn-model" marginTop="20px">
-				<Row className="snn-title">
-					<Col>
-						<StyledModelTitle>
-							{this.props.title}
-						</StyledModelTitle>
-					</Col>
-				</Row>
-
-				<Row className="snn-buttons">
-					<Col>
-						<StyledButton className='fit-button' primary value="fit-button" onClick={this.handleClick}>
-							Fit model!
-						</StyledButton>
-					</Col>
-
-					<Col>
-						<StyledButton className='predict-button' primary onClick={this.handleClick} disabled={!this.state.isFitted}>
-							Predict! 
-						</StyledButton>
-					</Col>
-				</Row>
-			</StyledContainer>
-			);
-	}
-}
-
-const xs = tf.tensor2d([[0, 0], [0, 1], [1, 0], [1, 1]]);
-const ys = tf.tensor2d([[0], [1], [1], [0]]);
 
 class OptimizationModel extends React.Component {
 	constructor(props) {
@@ -645,4 +389,3 @@ class TestLinearModel extends React.Component {
 	}
 }
 
-export default ModelContainer; 
