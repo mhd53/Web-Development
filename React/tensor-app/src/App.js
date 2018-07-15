@@ -5,6 +5,7 @@ import logo from './logo.svg';
 import './App.css';
 import defaultTheme from './theme';
 import ModelContainer from './ModelContainer';
+import myDataset from './dataset';
 
 // Styled Components
 const StyledAppContainer = styled.div`
@@ -53,10 +54,11 @@ class AppHeader extends React.Component {
 
 class AppContainer extends React.Component {
   render() {
+    const dataset = myDataset();
     return (
       <StyledAppContainer width="100%">
         <AppHeader header="Tensorflow is awesome!" />
-        <ModelContainer modelName='snn' regx='\[\d+,\s\d+\]' />
+        <ModelContainer modelName='snn' regx='\[\d+,\s\d+\]' dataset={dataset} />
       </StyledAppContainer>
       );
   }

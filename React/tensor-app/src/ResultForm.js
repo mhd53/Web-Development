@@ -15,25 +15,38 @@ import StyledButton from './StyledComponents/StyledButton';
  */
 class PredictionInput extends React.Component {
 	render() {
+		let invalid;
+		if (this.props.value == '') {
+			console.log("ResultForm: PredictionInput: value is empty! " + this.props.value);
+			invalid = false;
+		}
+
+		else {
+			invalid = !this.props.isValid;
+		}
+		console.log("ResultForm: PredictionInput: invalid = " + invalid);
+
 		const value = this.props.value;
+
 		return (
 			<Row>
 				<Col xs="12">
 					<StyledFormLabel>
 						Data point:
 						<StyledInput 
-								invalid={!this.props.isValid}
+								invalid={invalid}
 								required
 								// ref={this.invalid}
 								// pattern="\[\d+,\s\d+\]"
 								type="text" 
 								onChange={this.props.handleChange} 
-								disabled={this.props.isFitted} 
+								disabled={!this.props.isFitted} 
 								placeholder="Enter data point i.e [0, 0]" 
 								value={value} />
 						<StyledButton 
 								primary
 								type="submit"
+								disabled={!this.props.isFitted}
 								>
 							OK
 						</StyledButton>
@@ -67,7 +80,7 @@ class ResultForm extends React.Component {
 	constructor(props) {
 	  super(props);
 	
-	  this.state = {value: '', isValid: true, isPopOpen: false};
+	  this.state = {value: '', /*isValid: true,*/ isPopOpen: false};
 
 	  // Reference
 	  this.invalid = React.createRef();
@@ -75,8 +88,8 @@ class ResultForm extends React.Component {
 	  // Bind methods
 	  this.setValue = this.setValue.bind(this);
 	  this.getValue = this.getValue.bind(this);
-	  this.setIsValid = this.setIsValid.bind(this);
-	  this.getIsValid = this.getIsValid.bind(this);
+	  // this.setIsValid = this.setIsValid.bind(this);
+	  // this.getIsValid = this.getIsValid.bind(this);
 	  this.setIsPopOpen = this.setIsPopOpen.bind(this);
 	  this.getIsPopOpen = this.getIsPopOpen.bind(this);
 
@@ -91,9 +104,11 @@ class ResultForm extends React.Component {
 		this.setState({value: newValue});
 	}
 
+	/*
 	setIsValid(newBool) {
 		this.setState({isValid: newBool});
 	}
+	*/
 
 	setIsPopOpen(newBool) {
 		this.setState({popOpen: newBool});
@@ -103,9 +118,11 @@ class ResultForm extends React.Component {
 		return this.state.value;
 	}
 
+	/*
 	getIsValid() {
-		return this.state.invalidInput;
+		return this.state.isValid;
 	}
+	*/
 
 	getIsPopOpen() {
 		return this.state.popOpen;
@@ -131,8 +148,6 @@ class ResultForm extends React.Component {
 	handleChange(e) {
 		// alert(this.invalid.current.value);
 		this.setValue(e.target.value);
-
-
 	}
 
 	/**
@@ -141,14 +156,22 @@ class ResultForm extends React.Component {
 	 * @return no return value.
 	 */
 	handleSubmit(e) {
+		const value = this.getValue();
 		e.preventDefault();
 
 		// Check to see if input is valid
 		const isValid = this.validate(this.getValue());
-		console.log("Is valid: " + isValid);
-		this.setIsValid(isValid);
-		if (this.getIsValid()) {
-			this.props.setInput(this.props.getInput());
+		console.log("ResultForm: handleSubmit: Is valid: " + isValid);
+		this.props.setIsValid(isValid);
+		console.log("ResultForm: handleSubmit: get is valid: " + this.props.getIsValid());
+
+		if (this.props.getIsValid()) {
+			console.log("ResultForm: handleSubmit: input is valid!");
+			console.log("ResultForm: handleSubmit: value = " + this.getValue());
+			console.log("ResultForm: handleSubmit: value type = " + typeof this.getValue());
+			this.props.setInput(this.getValue());
+			// this.props.setInput(value);
+			console.log("ResultForm: handleSubmit: input = " + this.props.getInput());
 		}
 
 		else {
@@ -159,6 +182,8 @@ class ResultForm extends React.Component {
 
 	render() {
 		const isFitted = this.props.getIsFitted();
+		const output = this.props.getOutput();
+		const isValid = this.props.getIsValid();
 		return (
 			<Row>
 				<Col xs="12">
@@ -167,13 +192,13 @@ class ResultForm extends React.Component {
 							<PredictionInput 
 									className="prediction-input" 
 									value={this.state.value}
-									isValid={this.state.isValid}
+									isValid={isValid}
 									handleChange={this.handleChange}
 									isFitted={isFitted} 
 									/>
 							<PredictionOutput 
 									className="prediction-output" 
-									output={this.props.output} 
+									output={output} 
 									/>
 						</StyledForm>
 					</StyledContainer>

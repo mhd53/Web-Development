@@ -15,9 +15,24 @@ class SimpleNN extends React.Component {
 	  this.state = {model: null};
 
 	  // Bind methods
+	  this.setModel = this.setModel.bind(this);
+	  this.getModel = this.getModel.bind(this);
+
+	  // Component methods
+	  this.formateInput = this.formateInput.bind(this);
+	  this.formateOutput = this.formateOutput.bind(this);
+	  this.checkDatasetSpec = this.checkDatasetSpec.bind(this);
 	  this.fit = this.fit.bind(this);
 	  this.predict = this.predict.bind(this);
 	  this.handleClick = this.handleClick.bind(this);
+	}
+
+	setModel(newModel) {
+		this.setState({model: newModel});
+	}
+
+	getModel() {
+		return this.state.model;
 	}
 
 	handleClick(event) {
@@ -54,6 +69,46 @@ class SimpleNN extends React.Component {
 		return [xs, ys];
 	}
 
+	checkDatasetSpec() {
+		const dataset = this.props.dataset;
+		const xs = dataset[0];
+		const ys = dataset[1];
+		// const xs = tf.tensor2d(dataset[0]);
+		// const ys = tf.tensor2d(dataset[1]);
+		console.log("xs type: " + (typeof xs));
+		console.log("ys type: " + (typeof ys));
+		console.log("xs shape: " + xs.shape);
+		console.log("ys shape: " + ys.shape);
+		console.log("n = : " + xs.shape[1]);
+		console.log("m = " + xs.shape[0]);
+	}
+
+	/**
+	 * Take user input as string and formate it into one data point example.
+	 * @return {[2d tensor]} array with the size and rank of one training example i.e. 1xn
+	 */
+	formateInput() {
+		// Assign values
+		const userInput = this.props.getInput();
+		console.log("SimpleNN: formateInput: userInput = " + userInput);
+		const dataset = this.props.dataset;
+		const xs = dataset[0];
+
+		// Get dataset shape
+		const xs_s = xs.shape
+		xs_s[0] = 1;
+		// const n = xs.shape[1]; // num features
+		// const m = xs.shape[0]; // num trainin examples
+
+		// Extract values of each feature in the userInput
+		const arrayVals = userInput.match(/\d+/g).map(Number);
+
+		return tf.tensor(arrayVals, xs_s);
+	}
+
+	formateOutput(predVal) {
+		return predVal.match(/\d+/)[0];
+	}
 
 	async fit() {
 		var model = this.createModel();
@@ -63,7 +118,7 @@ class SimpleNN extends React.Component {
 
 		await model.fit(X, Y, {
 			batchSize: 1,
-			epochs: 5000
+			epochs: 1
 		});
 
 		console.log('Training finished!');
@@ -71,24 +126,37 @@ class SimpleNN extends React.Component {
 		// this.setState({model: model, isFitted: !this.state.isFitted}); // update model
 
 		// Update snn state
-		this.setState({model: model});
+		this.setModel(model);
 
 		// Update model container state
+		console.log("SimpleNN: fit: getIsFitted before = " + this.props.getIsFitted());
 		this.props.setIsFitted(true);
+		console.log("SimpleNN: fit: getIsFitted after = " + this.props.getIsFitted());
 	}
 
-	async predict() {
-		if (this.props.isFitted && this.props.predData.size != 0) {
-			var model = this.state.model;
-			const prediction = await model.predict(this.props.predData);
-			this.setState({predictionData: prediction});
+	predict() {
+		console.log("SimpleNN: prediction: input before " + this.props.getInput());
+		if (this.props.getIsFitted() && this.props.getInput() != '') {
+			const predData = this.formateInput(this.props.getInput());
+			var model = this.getModel();
+			const prediction = model.predict(predData);
+			console.log("SimpleNN: predict: my prediction = " + prediction.print());
+			console.log("SimpleNN: predict: my elem prediction = " + prediction.toString());
+
+			// Set output value to prediction made by model
+			const formatedOtp = this.formateOutput(prediction.toString());
+			this.props.setOutput(formatedOtp);
+			this.props.setOutput(prediction.toString());
 		}
-		console.log("prediction data size: " + this.props.predData.size + 
-			", isFitted: " + this.props.isFitted);
+		// console.log("prediction data size: " + this.props.predData.size + 
+		// 	", isFitted: " + this.props.isFitted);
 		return;
 	}
 
 	render() {
+		this.checkDatasetSpec();
+		const isFitted = this.props.getIsFitted();
+		const isValid = this.props.getIsValid();
 		return (
 			<StyledContainer className="snn-model" marginTop="20px">
 				<Row className="snn-title">
@@ -101,13 +169,13 @@ class SimpleNN extends React.Component {
 
 				<Row className="snn-buttons">
 					<Col>
-						<StyledButton className='fit-button' primary value="fit-button" onClick={this.handleClick}>
+						<StyledButton className='fit-button' primary value="fit-button" onClick={this.fit}>
 							Fit model!
 						</StyledButton>
 					</Col>
 
 					<Col>
-						<StyledButton className='predict-button' primary onClick={this.handleClick} disabled={!this.state.isFitted}>
+						<StyledButton className='predict-button' primary onClick={this.predict} disabled={!isFitted || !isValid}>
 							Predict! 
 						</StyledButton>
 					</Col>

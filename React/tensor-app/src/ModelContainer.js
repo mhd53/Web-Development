@@ -10,13 +10,18 @@ class ModelContainer extends React.Component {
 	constructor(props) {
 	  super(props);
 	
-	  this.state = {input: '', isFitted: false};
+	  this.state = {input: '', isFitted: false, output: '', isValid: false};
 
 	  // Bind methods
 	  this.setInput = this.setInput.bind(this);
 	  this.setIsFitted = this.setIsFitted.bind(this);
-	  this.getInput = this.setInput.bind(this);
+	  this.setOutput = this.setOutput.bind(this);
+	  this.setIsValid = this.setIsValid.bind(this);
+	  this.getInput = this.getInput.bind(this);
 	  this.getIsFitted = this.getIsFitted.bind(this);
+	  this.getOutput = this.getOutput.bind(this);
+	  this.getIsValid = this.getIsValid.bind(this);
+
 	}
 	// Setter and getter methods (some standards should remain the same)
 	setInput(newInput) {
@@ -27,6 +32,14 @@ class ModelContainer extends React.Component {
 		this.setState({isFitted: newBool});
 	}
 
+	setOutput(newOutput) {
+		this.setState({output: newOutput});
+	}
+
+	setIsValid(newBool) {
+		this.setState({isValid: newBool});
+	}
+
 	getInput() {
 		return this.state.input;
 	}
@@ -35,16 +48,26 @@ class ModelContainer extends React.Component {
 		return this.state.isFitted;
 	}
 
+	getOutput() {
+		return this.state.output;
+	}
+
+	getIsValid() {
+		return this.state.isValid;
+	}
+
+
 	render() {
 		const modelName = this.props.modelName;
 		let model;
 		if (modelName == 'snn') {
 			/* Create a Simple Neural Net model. */
 			model = <SimpleNN dataset={this.props.dataset} 
-							  setInput={this.setInput} 
 							  setIsFitted={this.setIsFitted}
-							  getInput={this.getInput}
 							  getIsFitted={this.getIsFitted}
+							  setOutput={this.setOutput}
+							  getInput={this.getInput}
+							  getIsValid={this.getIsValid}
 							  title="Simple Neural Net Powers!" 
 							  />
 		}
@@ -63,10 +86,12 @@ class ModelContainer extends React.Component {
 				<Row className="modelForm">
 					<Col xs="12">
 						<ResultForm setInput={this.setInput}
-									regx={this.props.regx}
-									setIsFitted={this.setIsFitted}
+									setIsValid={this.setIsValid}
+									getIsValid={this.getIsValid}
 									getInput={this.getInput}
+									getOutput={this.getOutput}
 									getIsFitted={this.getIsFitted}
+									regx={this.props.regx}
 									/>
 					</Col>
 				</Row>
