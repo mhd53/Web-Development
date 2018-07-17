@@ -58,7 +58,7 @@ class AppContainer extends React.Component {
     return (
       <StyledAppContainer width="100%">
         <AppHeader header="Tensorflow is awesome!" />
-        <ModelContainer modelName='snn' regx='\[\d+,\s\d+\]' dataset={dataset} />
+        <ModelContainer modelName='snn' regx='^\[\d+,\s\d+\]$' dataset={dataset} />
       </StyledAppContainer>
       );
   }

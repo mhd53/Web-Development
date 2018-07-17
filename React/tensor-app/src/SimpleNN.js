@@ -25,6 +25,12 @@ class SimpleNN extends React.Component {
 	  this.fit = this.fit.bind(this);
 	  this.predict = this.predict.bind(this);
 	  this.handleClick = this.handleClick.bind(this);
+	  this.handleFitButton = this.handleFitButton.bind(this);
+	}
+
+	componentDidMount() {
+		// Fit model before first render
+		// this.fit();
 	}
 
 	setModel(newModel) {
@@ -55,7 +61,7 @@ class SimpleNN extends React.Component {
 	}
 
 	createModel() {
-		var model = tf.sequential();
+		const model = tf.sequential();
 		model.add(tf.layers.dense({units: 8, inputShape: 2, activation: 'tanh'}));
 		model.add(tf.layers.dense({units: 1, activation: 'sigmoid'}));
 		model.compile({optimizer: 'sgd', loss: 'binaryCrossentropy', lr:0.1});
@@ -73,8 +79,7 @@ class SimpleNN extends React.Component {
 		const dataset = this.props.dataset;
 		const xs = dataset[0];
 		const ys = dataset[1];
-		// const xs = tf.tensor2d(dataset[0]);
-		// const ys = tf.tensor2d(dataset[1]);
+		// const xs = tf.tensor2d(dataset[0]); // const ys = tf.tensor2d(dataset[1]);
 		console.log("xs type: " + (typeof xs));
 		console.log("ys type: " + (typeof ys));
 		console.log("xs shape: " + xs.shape);
@@ -110,16 +115,51 @@ class SimpleNN extends React.Component {
 		return predVal.match(/\d+/)[0];
 	}
 
+	handleFitButton() {
+		// Update model container state
+		console.log("SimpleNN: handleFitButton: getIsFitted before = " + this.props.getIsFitted());
+		this.props.setIsFitted(true);
+		console.log("SimpleNN: handleFitButton: getIsFitted after = " + this.props.getIsFitted());
+	}
+
 	async fit() {
-		var model = this.createModel();
+		console.log("Create model: before");
+		const model = await this.createModel();
+		console.log("Create model: after");
 		const dataset = this.props.dataset;
 		const X = dataset[0];
 		const Y = dataset[1];
 
+		console.log("Fit model: after");
 		await model.fit(X, Y, {
 			batchSize: 1,
-			epochs: 1
+			epochs: 200
 		});
+		console.log("Fit model: before");
+
+		console.log('Training finished!');
+
+		// this.setState({model: model, isFitted: !this.state.isFitted}); // update model
+
+		// Update snn state
+		this.setModel(model);
+	}
+
+	/*
+	async fit(e) {
+		console.log("Create model: before");
+		const model = await this.createModel();
+		console.log("Create model: after");
+		const dataset = this.props.dataset;
+		const X = dataset[0];
+		const Y = dataset[1];
+
+		console.log("Fit model: after");
+		await model.fit(X, Y, {
+			batchSize: 1,
+			epochs: 200
+		});
+		console.log("Fit model: before");
 
 		console.log('Training finished!');
 
@@ -133,12 +173,13 @@ class SimpleNN extends React.Component {
 		this.props.setIsFitted(true);
 		console.log("SimpleNN: fit: getIsFitted after = " + this.props.getIsFitted());
 	}
+	*/
 
 	predict() {
 		console.log("SimpleNN: prediction: input before " + this.props.getInput());
 		if (this.props.getIsFitted() && this.props.getInput() != '') {
 			const predData = this.formateInput(this.props.getInput());
-			var model = this.getModel();
+			const model = this.getModel();
 			const prediction = model.predict(predData);
 			console.log("SimpleNN: predict: my prediction = " + prediction.print());
 			console.log("SimpleNN: predict: my elem prediction = " + prediction.toString());
@@ -156,7 +197,9 @@ class SimpleNN extends React.Component {
 	render() {
 		this.checkDatasetSpec();
 		const isFitted = this.props.getIsFitted();
-		const isValid = this.props.getIsValid();
+		// const isValid = this.props.getIsValid();
+		const validInput = this.props.getInput();
+		console.log("SimpleNN: render: validInput = " + validInput);
 		return (
 			<StyledContainer className="snn-model" marginTop="20px">
 				<Row className="snn-title">
@@ -169,13 +212,13 @@ class SimpleNN extends React.Component {
 
 				<Row className="snn-buttons">
 					<Col>
-						<StyledButton className='fit-button' primary value="fit-button" onClick={this.fit}>
+						<StyledButton className='fit-button' primary value="fit-button" onClick={this.handleFitButton}>
 							Fit model!
 						</StyledButton>
 					</Col>
 
 					<Col>
-						<StyledButton className='predict-button' primary onClick={this.predict} disabled={!isFitted || !isValid}>
+						<StyledButton className='predict-button' primary onClick={this.predict} disabled={!isFitted || validInput == ""}>
 							Predict! 
 						</StyledButton>
 					</Col>

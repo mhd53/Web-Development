@@ -10,17 +10,15 @@ class ModelContainer extends React.Component {
 	constructor(props) {
 	  super(props);
 	
-	  this.state = {input: '', isFitted: false, output: '', isValid: false};
+	  this.state = {input: '', isFitted: false, output: ''};
 
 	  // Bind methods
 	  this.setInput = this.setInput.bind(this);
 	  this.setIsFitted = this.setIsFitted.bind(this);
 	  this.setOutput = this.setOutput.bind(this);
-	  this.setIsValid = this.setIsValid.bind(this);
 	  this.getInput = this.getInput.bind(this);
 	  this.getIsFitted = this.getIsFitted.bind(this);
 	  this.getOutput = this.getOutput.bind(this);
-	  this.getIsValid = this.getIsValid.bind(this);
 
 	}
 	// Setter and getter methods (some standards should remain the same)
@@ -36,10 +34,6 @@ class ModelContainer extends React.Component {
 		this.setState({output: newOutput});
 	}
 
-	setIsValid(newBool) {
-		this.setState({isValid: newBool});
-	}
-
 	getInput() {
 		return this.state.input;
 	}
@@ -52,11 +46,6 @@ class ModelContainer extends React.Component {
 		return this.state.output;
 	}
 
-	getIsValid() {
-		return this.state.isValid;
-	}
-
-
 	render() {
 		const modelName = this.props.modelName;
 		let model;
@@ -67,7 +56,6 @@ class ModelContainer extends React.Component {
 							  getIsFitted={this.getIsFitted}
 							  setOutput={this.setOutput}
 							  getInput={this.getInput}
-							  getIsValid={this.getIsValid}
 							  title="Simple Neural Net Powers!" 
 							  />
 		}
@@ -86,8 +74,6 @@ class ModelContainer extends React.Component {
 				<Row className="modelForm">
 					<Col xs="12">
 						<ResultForm setInput={this.setInput}
-									setIsValid={this.setIsValid}
-									getIsValid={this.getIsValid}
 									getInput={this.getInput}
 									getOutput={this.getOutput}
 									getIsFitted={this.getIsFitted}

@@ -12,21 +12,22 @@ import StyledButton from './StyledComponents/StyledButton';
 
 /**
  * Presentational components:
- */
-class PredictionInput extends React.Component {
-	render() {
-		let invalid;
-		if (this.props.value == '') {
-			console.log("ResultForm: PredictionInput: value is empty! " + this.props.value);
-			invalid = false;
-		}
+ */ class PredictionInput extends React.Component { 
+		render() { 
+		// let invalid;
+		// if (this.props.value == '') {
+		// 	console.log("ResultForm: PredictionInput: value is empty! " + this.props.value);
+		// 	invalid = false;
+		// }
 
-		else {
-			invalid = !this.props.isValid;
-		}
-		console.log("ResultForm: PredictionInput: invalid = " + invalid);
+		// else {
+		// 	invalid = !this.props.isValid;
+		// }
+		// console.log("ResultForm: PredictionInput: invalid = " + invalid);
 
+		// const invalid = this.props.invalid;
 		const value = this.props.value;
+		const isValid = this.props.isValid;
 
 		return (
 			<Row>
@@ -34,7 +35,7 @@ class PredictionInput extends React.Component {
 					<StyledFormLabel>
 						Data point:
 						<StyledInput 
-								invalid={invalid}
+								invalid={!isValid}
 								required
 								// ref={this.invalid}
 								// pattern="\[\d+,\s\d+\]"
@@ -80,16 +81,16 @@ class ResultForm extends React.Component {
 	constructor(props) {
 	  super(props);
 	
-	  this.state = {value: '', /*isValid: true,*/ isPopOpen: false};
+	  this.state = {value: '', isValid: true, isPopOpen: false};
 
 	  // Reference
-	  this.invalid = React.createRef();
+	  // this.invalid = React.createRef();
 
 	  // Bind methods
 	  this.setValue = this.setValue.bind(this);
 	  this.getValue = this.getValue.bind(this);
-	  // this.setIsValid = this.setIsValid.bind(this);
-	  // this.getIsValid = this.getIsValid.bind(this);
+	  this.setIsValid = this.setIsValid.bind(this);
+	  this.getIsValid = this.getIsValid.bind(this);
 	  this.setIsPopOpen = this.setIsPopOpen.bind(this);
 	  this.getIsPopOpen = this.getIsPopOpen.bind(this);
 
@@ -104,11 +105,11 @@ class ResultForm extends React.Component {
 		this.setState({value: newValue});
 	}
 
-	/*
 	setIsValid(newBool) {
+		console.log("ResultForm: setIsValid has been called!");
 		this.setState({isValid: newBool});
+		console.log("ResultForm: setIsValid: " + this.getIsValid());
 	}
-	*/
 
 	setIsPopOpen(newBool) {
 		this.setState({popOpen: newBool});
@@ -118,11 +119,9 @@ class ResultForm extends React.Component {
 		return this.state.value;
 	}
 
-	/*
 	getIsValid() {
 		return this.state.isValid;
 	}
-	*/
 
 	getIsPopOpen() {
 		return this.state.popOpen;
@@ -162,10 +161,13 @@ class ResultForm extends React.Component {
 		// Check to see if input is valid
 		const isValid = this.validate(this.getValue());
 		console.log("ResultForm: handleSubmit: Is valid: " + isValid);
-		this.props.setIsValid(isValid);
-		console.log("ResultForm: handleSubmit: get is valid: " + this.props.getIsValid());
+		this.setIsValid(isValid);
+		// this.setState({isValid: isValid});
+		// this.state.isValid = isValid;
+		console.log("ResultForm: handleSubmit: get is valid: " + this.getIsValid());
+		console.log("ResultForm: handleSubmit: this state valid: " + this.state.isValid);
 
-		if (this.props.getIsValid()) {
+		if (isValid) {
 			console.log("ResultForm: handleSubmit: input is valid!");
 			console.log("ResultForm: handleSubmit: value = " + this.getValue());
 			console.log("ResultForm: handleSubmit: value type = " + typeof this.getValue());
@@ -183,7 +185,10 @@ class ResultForm extends React.Component {
 	render() {
 		const isFitted = this.props.getIsFitted();
 		const output = this.props.getOutput();
-		const isValid = this.props.getIsValid();
+		const isValid = this.getIsValid();
+		const value = this.getValue();
+
+		// const invalid = !isValid && this.getValue() == "";
 		return (
 			<Row>
 				<Col xs="12">
@@ -191,7 +196,7 @@ class ResultForm extends React.Component {
 						<StyledForm onSubmit={this.handleSubmit}>
 							<PredictionInput 
 									className="prediction-input" 
-									value={this.state.value}
+									value={value}
 									isValid={isValid}
 									handleChange={this.handleChange}
 									isFitted={isFitted} 
