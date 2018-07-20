@@ -1,6 +1,16 @@
 import React from 'react';
 import {Col, Row} from 'reactstrap';
+// import '@tensorflow/tfjs-node';
+// console.log("Importing tensorflow... ");
 import * as tf from '@tensorflow/tfjs';
+// import '@tensorflow/tfjs';
+// import '@tensorflow/tfjs-node';
+
+// console.log("Importing tensorflow high performance... ");
+
+// const tf = require('@tensorflow/tfjs');
+// require('@tensorflow/tfjs-node');
+
 
 // Styled Components import 
 import StyledContainer from './StyledComponents/StyledContainer';
@@ -15,22 +25,82 @@ class SimpleNN extends React.Component {
 	  this.state = {model: null};
 
 	  // Bind methods
-	  this.setModel = this.setModel.bind(this);
-	  this.getModel = this.getModel.bind(this);
-
-	  // Component methods
-	  this.formateInput = this.formateInput.bind(this);
-	  this.formateOutput = this.formateOutput.bind(this);
-	  this.checkDatasetSpec = this.checkDatasetSpec.bind(this);
+	  this.setModel = this.setModel.bind(this); this.getModel = this.getModel.bind(this); // Component methods this.formateInput = this.formateInput.bind(this); this.formateOutput = this.formateOutput.bind(this); this.checkDatasetSpec = this.checkDatasetSpec.bind(this);
 	  this.fit = this.fit.bind(this);
 	  this.predict = this.predict.bind(this);
 	  this.handleClick = this.handleClick.bind(this);
 	  this.handleFitButton = this.handleFitButton.bind(this);
+	  this.handleAsyncClick = this.handleAsyncClick.bind(this);
 	}
 
 	componentDidMount() {
+		console.log("Inside compoenntDidMount... ");
 		// Fit model before first render
 		// this.fit();
+		// tf.setBackend('tensorflow');
+		// const model = await this.createModel();
+
+		// Create and save model
+		const modelPromise = new Promise((resolve, reject) => {
+			const model = this.createModel();
+			// setTimeout(())
+
+			setTimeout(() => {
+				this.setModel(model);
+				console.log("react updating model state... ");
+				resolve(true);
+			}, 10000);
+			// try {
+			// 	setTimeout(() => {
+			// 		this.setModel(model);
+			// 		console.log("Succesfully created model!");
+			// 		resolve(true);
+			// 	}, 10000);
+			// } catch(e) {
+
+			// 	  reject("Creating model failed!");
+			// }
+
+		}).catch((e) => {
+			console.log(e);
+		});
+
+
+		/*
+		 * Fit model now that it has been succesfully created without
+		 * any error occuring and react has had enough time to update
+		 * it's state.
+		 */
+		modelPromise.then((success) => {
+			if (this.props.getIsFitted == false && success) {
+				console.log("componentDidMount: Model is being fitted... ");
+				this.fit();
+			}
+
+		}).then(() => {
+			// Update model container state
+			console.log("componentDidMount: model has been succesfully fiited!")
+			this.props.setIsFitted(true);
+		}).catch((e) => {
+			console.log("model fit failed... " + e);
+		});
+
+		// const modelPromise = new Promise((resolve, reject) => {
+		// 	try {
+		// 		resolve();
+		// 	} catch(error) {
+		// 		if (reject != )
+		// 	}
+
+		// });
+		// const model = this.createModel();
+		// this.setModel(model);
+
+		// if (this.props.getIsFitted() == false && ) {
+		// 	console.log("componentDidMount: Model is being fitted... ");
+		// 	this.fit();
+		// }
+		console.log("What's my backend? ", tf.getBackend());
 	}
 
 	setModel(newModel) {
@@ -122,6 +192,7 @@ class SimpleNN extends React.Component {
 		console.log("SimpleNN: handleFitButton: getIsFitted after = " + this.props.getIsFitted());
 	}
 
+	/*
 	async fit() {
 		console.log("Create model: before");
 		const model = await this.createModel();
@@ -144,22 +215,41 @@ class SimpleNN extends React.Component {
 		// Update snn state
 		this.setModel(model);
 	}
+	*/
 
-	/*
-	async fit(e) {
+	async handleAsyncClick2(t) {
+		console.log("")
+	}
+
+	async handleAsyncClick(t) {
+		console.log("Promise starting... ");
+		return await new Promise((resolve, reject) => {
+			setTimeout(() => resolve(1), 100000);
+
+		}).then((result) => {
+			alert(result);
+			console.log("Promise finsied!");
+		});
+
+	}
+
+	async fit() {
 		console.log("Create model: before");
-		const model = await this.createModel();
+		// const model = this.createModel();
+		const model = this.getModel();
 		console.log("Create model: after");
 		const dataset = this.props.dataset;
 		const X = dataset[0];
 		const Y = dataset[1];
 
-		console.log("Fit model: after");
+		// tf.nextFrame();
+
+		console.log("Fit model: before");
 		await model.fit(X, Y, {
 			batchSize: 1,
 			epochs: 200
 		});
-		console.log("Fit model: before");
+		console.log("Fit model: after");
 
 		console.log('Training finished!');
 
@@ -169,11 +259,10 @@ class SimpleNN extends React.Component {
 		this.setModel(model);
 
 		// Update model container state
-		console.log("SimpleNN: fit: getIsFitted before = " + this.props.getIsFitted());
-		this.props.setIsFitted(true);
-		console.log("SimpleNN: fit: getIsFitted after = " + this.props.getIsFitted());
+		// console.log("SimpleNN: fit: getIsFitted before = " + this.props.getIsFitted());
+		// this.props.setIsFitted(true);
+		// console.log("SimpleNN: fit: getIsFitted after = " + this.props.getIsFitted());
 	}
-	*/
 
 	predict() {
 		console.log("SimpleNN: prediction: input before " + this.props.getInput());
@@ -211,11 +300,17 @@ class SimpleNN extends React.Component {
 				</Row>
 
 				<Row className="snn-buttons">
+					{/*
 					<Col>
 						<StyledButton className='fit-button' primary value="fit-button" onClick={this.handleFitButton}>
 							Fit model!
 						</StyledButton>
+
+						<StyledButton className='fit-button' primary value="fit-button" onClick={this.handleAsyncClick}>
+							Async Button
+						</StyledButton>
 					</Col>
+					*/}
 
 					<Col>
 						<StyledButton className='predict-button' primary onClick={this.predict} disabled={!isFitted || validInput == ""}>
