@@ -1,0 +1,22 @@
+export default {
+        background: '#f5f8fb',
+        fontFamily: 'monospace',
+        fontColor: '#fff',
+        headerBgColor: '#f29500',
+        headerFontSize: '34px',
+        header1FontSize: '28px',
+        headerFontColor: '#ffffff',
+        headerFont: 'monospace',
+        buttonBgColor: '#70ffbc',
+        themeColor: '#70ffbc',
+        buttonFontColor: '#ffffff',
+        borderColor: '#70ffbc',
+        navBrandColor: '#f29500',
+        navFontColor: '#000000',
+        defPrimaryFontColor: '#000000',
+        defSecondaryFontColor: '#ffffff',
+        defPrimaryBgColor: '#ffffff',
+        defSecondaryBgColor: '#000000',
+        defBrandColor: '#70ffbc',
+
+};
